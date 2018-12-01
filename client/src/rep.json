@@ -1,0 +1,65 @@
+{
+	"songs": [
+		{
+			"name": "...Ready For It",
+			"duration": "3:28"
+		},
+		{
+			"name": "End Game",
+			"duration": "4:04"			
+		},
+		{
+			"name": "I Did Something Bad",
+			"duration": "3:58"			
+		},
+		{
+			"name": "Don't Blame Me",
+			"duration": "3:56"			
+		},
+		{
+			"name": "Delicate",
+			"duration": "3:52"			
+		},
+		{
+			"name": "Look What You Made Me Do",
+			"duration": "3:31"
+		},
+		{
+			"name": "So It Goes...",
+			"duration": "3:47"
+		},
+		{
+			"name": "Gorgeous",
+			"duration": "3:29"
+		},
+		{
+			"name": "Getaway Car",
+			"duration": "3:53"
+		},
+		{
+			"name": "King Of My Heart",
+			"duration": "3:34"
+		},
+		{
+			"name": "Dancing With Our Hands Tied",
+			"duration": "3:31"
+		},
+		{
+			"name": "Dress",
+			"duration": "3:50"
+		},
+		{
+			"name": "This Is Why We Can't Have Nice Things",
+			"duration": "3:27"
+		},
+		{
+			"name": "Call It What You Want",
+			"duration": "3:23"
+		},
+		{
+			"name": "New Year's Day",
+			"duration": "3:55"
+		}
+	]
+
+}
