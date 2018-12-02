@@ -11,14 +11,15 @@
 
 }
 .taylor {
-    padding-top: 10px;
     height: 100%;
     background-image: url('rep.jpeg');
+    background-repeat: repeat;
     overflow-y: scroll;
+    position: absolute;
+    width: 100%;
 }
 
 table { 
-  margin: 0 10px 50px 0px;
   width: 100%;
 }
 table, th, td {
@@ -40,32 +41,11 @@ td:nth-child(1), td:nth-child(3), td:nth-child(4) {
   display: none;
   position: fixed;
   z-index: 1;
-  left: 0;
-  top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
 }
-.modal-content { 
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-.close:hover,.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
 .leftPanel{
   float: left;
   width: 50%;
@@ -73,6 +53,7 @@ td:nth-child(1), td:nth-child(3), td:nth-child(4) {
 .rightPanel {
   float: right;
   width: 50%;
+  padding: 10px 10px 0 0;
 }
 .albName{ 
   text-align: center;
@@ -81,6 +62,11 @@ td:nth-child(1), td:nth-child(3), td:nth-child(4) {
   font-family: "Cambria";
   padding: 20px;
 }
+.info {
+  top: 30%;
+  position: absolute;
+  width: 50%;
+}
 .desc {
   text-align: center;
   font-size: 15px;
@@ -88,8 +74,19 @@ td:nth-child(1), td:nth-child(3), td:nth-child(4) {
   padding: 20px;
   font-family: "Cambria";
   background-color: rgba(243, 241, 239, 0.6);
+  margin: 0 20px 0 20px;
 }
 .albName > span {
   background-color: rgba(243, 241, 239, 0.6);
-  padding: 15px;  
+  padding: 15px; 
+}
+#saveBtn {
+  margin: 0 10px 0 10px;
+}
+.dropdown {
+  margin-top: 10px;
+  height: 100%;
+}
+.dropdown-menu {
+  left: 160px !important;
 }

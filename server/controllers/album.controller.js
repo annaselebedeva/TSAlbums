@@ -11,7 +11,8 @@ exports.createAlbum = function (req, res) {
             name: req.body.name,
             yearReleased: req.body.yearReleased,
             description: req.body.description,
-            songs: req.body.songs
+            songs: req.body.songs,
+            image: req.body.image
         }
     );
 

@@ -39,6 +39,11 @@ const AlbumSchema = new Schema({
     type: String,
     trim: true,
     default: ''
+  },
+  image: {
+    type: String,
+    trim: true,
+    default:''
   }
 }, {
   id: false
