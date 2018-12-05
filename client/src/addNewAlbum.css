@@ -1,20 +1,21 @@
 .form {
   display: flex;
+  width: 100%;
 }
 .modal-content { 
   background-color: #fefefe;
   padding: 20px;
   border: 1px solid #888;
-  left: 15%;
-  top: 15%;
-  width: 70% !important;
+  top: 10%;
   align-items: center;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
+  height: 80%;
 }
 .close {
   color: #aaa;
-  margin: auto;
+  float: right;
   font-size: 28px;
   font-weight: bold;
 }
@@ -22,4 +23,40 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+form {
+	width: 50%;
+}
+.add {
+	float:right;
+}
+.list-group {
+	list-style-type:none;
+	padding-left: 44%;
+}
+.val {
+	float: right;
+	padding-left: 100px;
+}
+.head {
+  font-size: 40px;
+  font-weight: bold;
+  font-family: "Cambria";
+  padding: 10px;	
+}
+.sub {
+	float: right;
+}
+.error {
+  border:1px solid red;
+}
+.songs {
+	display: flex;
+	justify-content: space-between;
+}
+.hide {
+	display: none;
+}
+div#hide > span {
+	font-weight: bold;
 }
