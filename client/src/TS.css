@@ -20,6 +20,7 @@
 }
 
 table { 
+  display: hidden;
   width: 100%;
 }
 table, th, td {
@@ -51,6 +52,7 @@ td:nth-child(1), td:nth-child(3), td:nth-child(4) {
   width: 50%;
 }
 .rightPanel {
+  display: none;
   float: right;
   width: 50%;
   padding: 10px 10px 0 0;
@@ -63,6 +65,7 @@ td:nth-child(1), td:nth-child(3), td:nth-child(4) {
   padding: 20px;
 }
 .info {
+  display: none;
   top: 30%;
   position: absolute;
   width: 50%;
@@ -80,7 +83,7 @@ td:nth-child(1), td:nth-child(3), td:nth-child(4) {
   background-color: rgba(243, 241, 239, 0.6);
   padding: 15px; 
 }
-#saveBtn {
+.btn {
   margin: 0 10px 0 10px;
 }
 .dropdown {
@@ -89,4 +92,21 @@ td:nth-child(1), td:nth-child(3), td:nth-child(4) {
 }
 .dropdown-menu {
   left: 160px !important;
+}
+.landing {
+  display: block;
+  width: 50%;
+  top: 25%;
+  left: 25%;
+  background-color: rgba(243, 241, 239, 0.6);
+  padding: 15px; 
+  z-index: 2;
+  position: absolute;
+}
+.title {
+  text-align: center;
+  font-size: 50px;
+  font-weight: bold;
+  font-family: "Cambria";
+  padding: 20px; 
 }

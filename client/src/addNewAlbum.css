@@ -15,14 +15,13 @@
 }
 .close {
   color: #aaa;
-  float: right;
   font-size: 28px;
   font-weight: bold;
+  margin-left: 97%;
 }
 .close:hover,.close:focus {
   color: black;
   text-decoration: none;
-  cursor: pointer;
 }
 form {
 	width: 50%;

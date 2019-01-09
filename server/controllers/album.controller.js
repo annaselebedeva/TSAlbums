@@ -6,6 +6,7 @@ exports.test = function (req, res) {
 };
 
 exports.createAlbum = function (req, res) {
+    console.log("creating album");
     let album = new Album(
         {
             name: req.body.name,
@@ -15,10 +16,16 @@ exports.createAlbum = function (req, res) {
             image: req.body.image
         }
     );
-
     album.save(function (err) {
         if (err) res.send(err);
-        else res.send('Album Created successfully');
+        else {res.send('Album Created successfully'); console.log("album created successfully");}
+    })
+};
+
+exports.getAllAlbums = function (req, res) {
+    Album.find({}, function (err, result) {
+        if (err) res.send(err);
+        else res.send(result);
     })
 };
 

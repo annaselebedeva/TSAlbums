@@ -4,7 +4,9 @@ import StarRatingComponent from 'react-star-rating-component';
 import './TS.css';
 import 'whatwg-fetch';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import NewAlbum from './addNewAlbum.js'
+import NewAlbum from './addNewAlbum.js';
+import $ from 'jquery'
+
 //import Client from './Client';
 var data = require('./rep.json');
 
@@ -19,14 +21,17 @@ class TS extends Component {
         description: '',
         songs: [],
         isOpen: false,
-        value: ''
+        value: '',
+        showModal: false,
+        albums: []
       };
-      this.pollInterval = null;
-    //this.saveAlbum = this.saveAlbum.bind(this);
+    this.pollInterval = null;
     this.toggleOpen = this.toggleOpen.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.loadAlbum = this.loadAlbum.bind(this);
     this.loadAlbumsFromServer = this.loadAlbumsFromServer.bind(this);
+    this.myCallback = this.myCallback.bind(this);
+
   }
   onStarClick(nextValue, prevValue, name) {
     this.setState({rating:nextValue});
@@ -34,33 +39,35 @@ class TS extends Component {
     console.log(this.state.rating);
   }
   toggleOpen() {
+    if ($('.dropdown-menu').hasClass('show')) $('.dropdown-menu').show();
     this.setState({ isOpen: !this.state.isOpen });
   } 
 
   handleChange(event) {
     this.setState({value: event.target.value});
   }
-
-  handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.value);
-    document.getElementById("myModal").style.display = "none";
-
-    event.preventDefault();
+  loadAlbum(event) {
+    let albumObj = this.state.albums.find(album => album.name === event.target.textContent);
+    this.setState({
+        name: albumObj.name,
+        yearReleased: albumObj.yearReleased,
+        image: albumObj.image,
+        description: albumObj.description,
+        songs: albumObj.songs,
+    }); 
+    $('.taylor').css("background-image", `url(${albumObj.image})`);
+    $('.landing').css("display", "none");
+    $('.info').css("display", "block");
+    $('.rightPanel').css("display", "block");
+    $('.dropdown-menu').hide();
+    this.toggleOpen();
   }
 
-  loadAlbumsFromServer() {
-    fetch('api/5bfa4a18b5a1af09f28b7ff5/')
+loadAlbumsFromServer() {
+    fetch('api/allAlbums/')
       .then(data => data.json())
-      .then((res) => {
-        this.setState({ 
-          name: res.name,
-          yearReleased: res.yearReleased,
-          description: res.description,
-          songs: res.songs,
-          image: res.image
-        });
-      });
-  }
+      .then((res) => this.setState({ albums: res }, ()=> console.log(this.state.albums)));
+}
 
 componentWillUnmount() {
   if (this.pollInterval) clearInterval(this.pollInterval);
@@ -69,36 +76,36 @@ componentWillUnmount() {
 
 componentDidMount() {
     document.title = 'Taylor Swift Albums';
-
-    this.loadAlbumsFromServer();
+    
     if (!this.pollInterval) {
       this.pollInterval = setInterval(this.loadAlbumsFromServer, 2000);
     }
-
-    let modal = document.getElementById("myModal");
-    let btn = document.getElementById("saveBtn");
-    //let span = document.getElementsByClassName("close")[0];
-    btn.onclick = function () {
-      modal.style.display = "block";
-    }
-    //span.onclick= function () {
-    //  modal.style.display = "none";
-   // }
+    $('#saveBtn').click(function () {
+      $('#myModal').css("display","block");
+    });
     window.onclick = function (event) { 
-      if (event.target === modal) {
-        modal.style.display = "none"
+      if (event.target === document.getElementById('myModal')) {
+        $('#myModal').css("display", "none");
       }
     }
-
-
-    //console.log(this.state.songs);
   }
 
+  myCallback(dataFromChild) {
+    this.setState({ showModal: dataFromChild }, () => {
+      if (!this.state.showModal) {
+        $("#myModal").css("display", "none");
+      } 
+    });
+  }
   render() {
     const { rating } = this.state; 
     const menuClass = `dropdown-menu ${this.state.isOpen ? " show" : ""}`;
     let i = 0;
-    //console.log(this.state.songs);
+    let albumList = this.state.albums.map((album)=> {
+      return (
+        <button className="dropdown-item" type="button" onClick={this.loadAlbum}>{ album.name }</button>
+      );
+    });
     let songs = this.state.songs.map((song) => {
       return (
         <tbody>
@@ -106,11 +113,11 @@ componentDidMount() {
               <td>{ ++i }</td>
               <td>{ this.state.songs[i-1].name }</td>
               <td>{ this.state.songs[i-1].duration }</td>
-              <td>
+              <td> {/*JSON.parse(localStorage.getItem(`rating rate${i}`))*/}
                 <StarRatingComponent 
                   name={"rate"+i}
                   starCount={5}
-                  value={JSON.parse(localStorage.getItem(`rating rate${i}`))}
+                  value={song.rating}
                   onStarClick={this.onStarClick.bind(this)}
                 />
               </td>
@@ -119,19 +126,24 @@ componentDidMount() {
       );
   });
 
-
     return (
       <div className='taylor'>
+        <div className="landing">
+          <p align="center" className="title"><span>Taylor Swift's Albums</span></p>          
+          <p align="center" className="desc">
+            Welcome to the Taylor Swift Albums website!
+            Click on "Change Album" to pick an album to display or "Save New Album" to save a new album! 
+            Thank you for visiting! 
+          </p>
+        </div>      
         <div className="leftPanel">
           <div className="dropdown">
-            <button id="saveBtn" type="button" className="btn" onClick={this.saveAlbum}>Save New Album</button>
+            <button id="saveBtn" type="button" className="btn">Create New Album</button>
             <button className="btn dropdown-toggle" onClick={this.toggleOpen} type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true">
               Change Album
             </button>
             <div className={menuClass} aria-labelledby="dropdownMenuButton">
-              <button className="dropdown-item" type="button" >Taylor Swift</button>
-              <button className="dropdown-item" type="button">Fearless</button>
-              <button className="dropdown-item" type="button">Speak Now</button>
+              { albumList }
             </div>
           </div>
 
@@ -154,11 +166,14 @@ componentDidMount() {
           </table>
         </div>
         <div id="myModal" className="modal">
-          <NewAlbum />
+          <NewAlbum 
+            callbackFromParent={this.myCallback}
+          />
         </div>
       </div>
     );
   }
 }
+
 
 export default TS;

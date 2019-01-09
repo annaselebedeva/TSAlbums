@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import ReactDOM from 'react-dom';
 import StarRatingComponent from 'react-star-rating-component';
 import './TS.css';
 import 'whatwg-fetch';
@@ -15,12 +14,29 @@ class NewAlbum extends Component {
         yearReleased: '',
         description: '',
         image: '',
-        songs: []
+        songs: [],
+        showModal: true
       };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.preventSubmit = this.preventSubmit.bind(this);
     this.handleSongAdd = this.handleSongAdd.bind(this);
     this.removeError = this.removeError.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    if (e.target.value === $('.newName').val()) {
+      this.setState({ name: $('.newName').val() });
+    }
+    else if (e.target.value === $('.newYear').val()) {
+      this.setState({ yearReleased: $('.newYear').val() });
+    }
+    else if (e.target.value === $('.newDesc').val()) {
+      this.setState({ description: $('.newDesc').val() });
+    }
+    else if (e.target.value === $('.newImg').val()) {
+      this.setState({ image: $('.newImg').val() });
+    }
   }
 
   removeError (e) {
@@ -41,7 +57,7 @@ class NewAlbum extends Component {
     let newRate = $('#newRate').val();
     if (!newRate) newRate = 0;
     let uid = Math.round(new Date().getTime() + (Math.random() * 100));
-    if (newSong && newDur) { // <input type="hidden" class="col-sm-5" name="listed[]" value=${newItem}> was after ${newItem}\
+    if (newSong && newDur) {
       $('#hide').removeClass('hide');
       $('#list').append(`<div id=${uid} class="songs">
                <span class="newS">${newSong}</span> <span class="newD">${newDur}</span> <span class="newR">${newRate}/5</span>
@@ -49,6 +65,7 @@ class NewAlbum extends Component {
       $('#newSong').val('');
       $('#newDur').val('');
       $('#newRate').val('');
+      this.setState({ songs: [...this.state.songs, {name: newSong, duration: newDur, rating: newRate}] });
     }
     else {
       if (!newSong) {
@@ -64,31 +81,55 @@ class NewAlbum extends Component {
         if ($('#list').children().length <= 1) {
           $('#hide').addClass('hide');
         }
+        let filteredArray = this.state.songs.filter(item => item !== $('#'+eid).value);
+        this.setState({songs: filteredArray});
     });
-    //console.log($('.songs').children()[5].textContent);
 }
 
-  async handleSubmit(event) {
-      console.log($('.newName').val());
-      this.setState({ name: $('.newName').val() });
-      this.setState({ yearReleased: $('.newYear').val() });
-      this.setState({ description: $('.newDesc').val() });
-      let s = $('.songs').children();
-      let songArray = [];
-      console.log(this.state.name, this.state.yearReleased, this.state.description);
-      for (let i = 4; i < s.length; i++) {
-        if (i+1 % 4) continue;
-        console.log(s[i]);
-        songArray.push({name: s[i].textContent}, {duration: s[i].textContent}, {rating: s[i].textContent});
+async handleSubmit(event) {
+      event.preventDefault();
+      let err = false;
+      if (!$('.newDesc').val()) { 
+        $('.newDesc').addClass('error'); err = true;
       }
-      console.log(songArray);
-      this.setState({ songs: songArray });
-      let { name, yearReleased, description, image, songs } = this.state;
+      if (!$('.newYear').val()) {
+        $('.newYear').addClass('error'); err = true;
+      }
+      if (!$('.newName').val()) { 
+        $('.newName').addClass('error'); err = true;
+      }
+      if (err) return;
       try {
-        await fetch('/api/create', {
+        let rawResponse = await fetch('api/create', {
           method: 'POST',
-          body: { name, yearReleased, description, image, songs }
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },          
+          body:  JSON.stringify({
+            name: this.state.name,
+            yearReleased: this.state.yearReleased,
+            description: this.state.description,
+            image: this.state.image,
+            songs: this.state.songs
+          })
         });
+        const content = await rawResponse;
+        console.log(content);
+        this.setState({
+          name: '',
+          yearReleased: '',
+          description: '',
+          image: '',
+          songs: [],
+          showModal: false
+        });
+        let inputs = document.getElementsByClassName('form-control');
+        for (let i = 0; i < inputs.length; i++) {
+          inputs[i].value = '';
+        }
+        $('.songs').empty();
+        $('#hide').addClass('hide');
       } catch (e) {
         console.log(e);
       }
@@ -96,36 +137,43 @@ class NewAlbum extends Component {
 
   componentDidMount() {
       document.title = 'Taylor Swift Albums';
+      this.setState({ showModal: true });
+      let span = document.getElementsByClassName("close")[0];
+      span.onclick = function() {
+        this.setState({ showModal: false }, ()=> {
+          this.props.callbackFromParent(this.state.showModal);
+        });
+      }.bind(this);
   }
 
   render() {
     return (
       <div className="modal-content container">
-        {/*<span className="close">&times;</span>*/}
+        <span className="close">&times;</span>        
         <p className="head">New Album</p>
-        <form id="form"> {/*onSubmit={this.handleSubmit}>*/}
+        <form id="form">
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">Name</label>
             <div className="col-sm-7">
-              <input className="form-control newName" type="text" placeholder="Enter album name" />
+              <input className="form-control newName" onChange={this.handleChange} type="text" onKeyPress={this.removeError} placeholder="Enter album name" />
             </div>
           </div>
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">Year Released</label>
             <div className="col-sm-7">
-              <input className="form-control newYear" type="text" placeholder="Enter the year" />
+              <input className="form-control newYear" onChange={this.handleChange} onKeyPress={this.removeError} type="text" placeholder="Enter the year" />
             </div>
           </div>
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">Description</label>
             <div className="col-sm-7">
-              <textarea className="form-control newDesc" rows="7" id="comment" type="text" placeholder="Album description goes here..."></textarea>
+              <textarea className="form-control newDesc" rows="7" onChange={this.handleChange} onKeyPress={this.removeError} id="comment" type="text" placeholder="Album description goes here..."></textarea>
             </div>
           </div>
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">Background Image</label>
             <div className="col-sm-7">
-              <input className="form-control newImg" rows="7" id="comment" type="text" placeholder="Add background image"></input>
+              <input className="form-control newImg" rows="7" id="comment" onChange={this.handleChange} type="text" placeholder="Add background image"></input>
             </div>
           </div>          
           <hr />          
@@ -166,7 +214,7 @@ class NewAlbum extends Component {
               <button className="btn sub" onClick={this.handleSubmit}>Add Album</button>
             </div>
           </div> 
-        </form>            
+        </form>
       </div>
     );
   }
